@@ -10,14 +10,32 @@ import (
 	"github.com/zachlatta/boolr/model"
 )
 
-func CreateBoolean(w http.ResponseWriter, r *http.Request,
+func CreateUserBoolean(w http.ResponseWriter, r *http.Request,
 	u *model.User) *AppError {
 	if u == nil {
 		return ErrNotAuthorized()
 	}
 
+	vars := mux.Vars(r)
+	stringID := vars["id"]
+
+	var id int64
+	if stringID == "me" {
+		id = u.ID
+	} else {
+		var err error
+		id, err = strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			return ErrInvalidID(err)
+		}
+	}
+
+	if id != u.ID {
+		return ErrForbidden()
+	}
+
 	defer r.Body.Close()
-	boolean, err := model.NewBoolean(r.Body, u.ID)
+	boolean, err := model.NewBoolean(r.Body, id)
 	if err != nil {
 		return ErrCreatingModel(err)
 	}

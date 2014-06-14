@@ -41,9 +41,9 @@ func main() {
 	r.Handle("/users/{id}", handler.AppHandler(handler.GetUser)).Methods("GET")
 	r.Handle("/users/{id}/booleans",
 		handler.AppHandler(handler.GetUserBooleans)).Methods("GET")
+	r.Handle("/users/{id}/booleans",
+		handler.AppHandler(handler.CreateUserBoolean)).Methods("POST")
 
-	r.Handle("/booleans",
-		handler.AppHandler(handler.CreateBoolean)).Methods("POST")
 	r.Handle("/booleans/{id}",
 		handler.AppHandler(handler.GetBoolean)).Methods("GET")
 	r.Handle("/booleans/{id}/switch",
