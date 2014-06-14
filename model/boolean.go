@@ -42,6 +42,11 @@ func NewBoolean(jsonReader io.Reader, userID int64) (*Boolean, error) {
 	return &boolean, nil
 }
 
+func (b *Boolean) Switch() {
+	b.Bool = !b.Bool
+	b.SwitchCount++
+}
+
 func (b *Boolean) validate() error {
 	switch {
 	case len(b.Label) > 255:

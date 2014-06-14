@@ -57,3 +57,38 @@ func GetBoolean(w http.ResponseWriter, r *http.Request,
 
 	return renderJSON(w, boolean, http.StatusOK)
 }
+
+func SwitchBoolean(w http.ResponseWriter, r *http.Request,
+	u *model.User) *AppError {
+	if u == nil {
+		return ErrNotAuthorized()
+	}
+
+	vars := mux.Vars(r)
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		return ErrInvalidID(err)
+	}
+
+	boolean, err := database.GetBoolean(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound(err)
+		}
+
+		return ErrDatabase(err)
+	}
+
+	if boolean.UserID != u.ID {
+		return ErrForbidden()
+	}
+
+	boolean.Switch()
+
+	err = database.SaveBoolean(boolean)
+	if err != nil {
+		return ErrDatabase(err)
+	}
+
+	return renderJSON(w, boolean, http.StatusOK)
+}

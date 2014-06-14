@@ -91,3 +91,35 @@ func GetUser(w http.ResponseWriter, r *http.Request, u *model.User) *AppError {
 
 	return ErrForbidden()
 }
+
+func GetUserBooleans(w http.ResponseWriter, r *http.Request,
+	u *model.User) *AppError {
+	if u == nil {
+		return ErrNotAuthorized()
+	}
+
+	vars := mux.Vars(r)
+	stringID := vars["id"]
+
+	var id int64
+	if stringID == "me" {
+		id = u.ID
+	} else {
+		var err error
+		id, err = strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			return ErrInvalidID(err)
+		}
+	}
+
+	if id != u.ID {
+		return ErrForbidden()
+	}
+
+	booleans, err := database.GetBooleansForUser(u.ID)
+	if err != nil {
+		return ErrDatabase(err)
+	}
+
+	return renderJSON(w, booleans, http.StatusOK)
+}
