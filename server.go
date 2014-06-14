@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zachlatta/boolr/database"
+	"github.com/zachlatta/boolr/handler"
 )
 
 func main() {
@@ -23,6 +24,10 @@ func main() {
 	defer database.Close()
 
 	r := mux.NewRouter()
+
+	r.Handle("/users", handler.AppHandler(handler.CreateUser)).Methods("POST")
+	r.Handle("/users/login", handler.AppHandler(handler.Login)).Methods("POST")
+	r.Handle("/users/{id}", handler.AppHandler(handler.GetUser)).Methods("GET")
 
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

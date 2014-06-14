@@ -7,6 +7,7 @@ _Finally_, a web-scale boolean-switching service. Informally created for
 
 * `POST /users`
 * `POST /users/login`
+* `GET /users/:id`
 * `POST /booleans`
 * `PUT /booleans/:id/switch`
   * `url` - url to issue callback to
