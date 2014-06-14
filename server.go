@@ -29,6 +29,11 @@ func main() {
 	r.Handle("/users/login", handler.AppHandler(handler.Login)).Methods("POST")
 	r.Handle("/users/{id}", handler.AppHandler(handler.GetUser)).Methods("GET")
 
+	r.Handle("/booleans",
+		handler.AppHandler(handler.CreateBoolean)).Methods("POST")
+	r.Handle("/booleans/{id}",
+		handler.AppHandler(handler.GetBoolean)).Methods("GET")
+
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
